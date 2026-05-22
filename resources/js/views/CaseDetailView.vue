@@ -30,40 +30,18 @@
       {{ error }}
     </div>
 
-    <div
+    <CaseDetail
       v-else-if="caseItem"
-      class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
-    >
-      <p class="text-sm text-slate-500">ID {{ caseItem.id }}</p>
-      <h3 class="mt-1 text-xl font-semibold text-slate-900">{{ caseItem.alias }}</h3>
-      <dl class="mt-4 grid gap-3 sm:grid-cols-2">
-        <div>
-          <dt class="text-sm text-slate-500">Status</dt>
-          <dd class="font-medium text-slate-900">{{ caseItem.status_label }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-slate-500">Prioritet</dt>
-          <dd class="font-medium text-slate-900">{{ caseItem.priority_label }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-slate-500">Ärendetyp</dt>
-          <dd class="font-medium text-slate-900">{{ caseItem.case_type_label }}</dd>
-        </div>
-        <div>
-          <dt class="text-sm text-slate-500">Kontaktkanal</dt>
-          <dd class="font-medium text-slate-900">{{ caseItem.contact_channel_label }}</dd>
-        </div>
-      </dl>
-      <p class="mt-4 text-sm text-slate-500">
-        Full detaljvy med statusbyte och tidslinje byggs i steg 7 (CaseDetail).
-      </p>
-    </div>
+      :case-item="caseItem"
+      @updated="caseItem = $event"
+    />
   </section>
 </template>
 
 <script setup>
 import { onMounted, ref } from 'vue';
 import { RouterLink, useRoute } from 'vue-router';
+import CaseDetail from '../components/CaseDetail.vue';
 import { casesApi } from '../api/cases';
 
 const route = useRoute();
@@ -71,14 +49,20 @@ const caseItem = ref(null);
 const loading = ref(true);
 const error = ref(null);
 
-onMounted(async () => {
+async function loadCase() {
+  loading.value = true;
+  error.value = null;
+
   try {
     const response = await casesApi.get(route.params.id);
     caseItem.value = response.data;
   } catch (err) {
     error.value = err.message ?? 'Kunde inte hämta ärendet.';
+    caseItem.value = null;
   } finally {
     loading.value = false;
   }
-});
+}
+
+onMounted(loadCase);
 </script>
