@@ -1,58 +1,205 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Care Intake Dashboard
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Ett kompakt fullstack-projekt för fiktiv ärendehantering på en psykologmottagning. Byggt som portfolio-demo för att visa snabb inlärning av **Laravel**, **Vue 3** och **Tailwind CSS** — med fokus på API-first-arkitektur, tillgänglighet och tydlig domänlogik.
 
-## About Laravel
+> Demo med fiktiva alias. Inga riktiga personuppgifter används.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**Repo:** [github.com/linneaegner/care-intake-dashboard](https://github.com/linneaegner/care-intake-dashboard)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Stack
 
-## Learning Laravel
+| Lager | Teknik |
+|-------|--------|
+| Backend | Laravel 13, PHP 8.3+ |
+| Frontend | Vue 3, Vue Router, Vite |
+| Styling | Tailwind CSS 4 |
+| Databas | SQLite (lokal utveckling) |
+| Tester | PHPUnit Feature tests |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Funktioner
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- Lista inkommande ärenden med alias, kontaktkanal, typ, prioritet och status
+- Filtrera på status och prioritet, sök på alias eller ärendetyp
+- Registrera nytt ärende med server-side validering och tydliga felmeddelanden
+- Detaljvy med sammanfattning, intern anteckning och tidslinje
+- Uppdatera status via API utan sidomladdning
+- WCAG-grunder: labels, focus states, semantisk HTML, `aria-live` vid uppdateringar
 
-## Agentic Development
+---
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Arkitektur
 
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```
+Vue SPA (resources/js/)
+    ↓ fetch
+Laravel API (/api/cases)
+    ↓
+Controller → Form Request → Service → Model
+    ↓
+API Resource → JSON
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+**Backend-lager**
 
-## Contributing
+- `Enums/` — domänregler (status, prioritet, ärendetyp m.m.)
+- `Http/Requests/` — validering
+- `Services/IntakeCaseService` — affärslogik och tidslinje
+- `Http/Resources/` — konsekvent JSON till frontend
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Frontend-komponenter**
 
-## Code of Conduct
+| Komponent | Ansvar |
+|-----------|--------|
+| `CaseList` | Tabell med ärenden |
+| `CaseFilters` | Filter och sök |
+| `CaseForm` | Skapa ärende |
+| `CaseDetail` | Detalj, status, anteckning, tidslinje |
+| `StatusBadge` | Färgkodade etiketter |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Kom igång
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Krav
 
-## License
+- PHP 8.3+
+- Composer
+- Node.js 18+
+- npm
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+### Installation
+
+```bash
+git clone https://github.com/linneaegner/care-intake-dashboard.git
+cd care-intake-dashboard
+
+composer install
+cp .env.example .env
+php artisan key:generate
+
+# SQLite
+touch database/database.sqlite
+
+# Säkerställ DB_CONNECTION=sqlite i .env
+php artisan migrate --seed
+
+npm install
+npm run build
+```
+
+### Starta lokalt
+
+**Alternativ A — produktionsbyggd frontend (en terminal):**
+
+```bash
+php artisan serve
+```
+
+Öppna http://127.0.0.1:8000
+
+**Alternativ B — utvecklingsläge med hot reload (två terminaler):**
+
+```bash
+# Terminal 1
+php artisan serve
+
+# Terminal 2
+npm run dev
+```
+
+Öppna http://127.0.0.1:8000 (inte Vite-porten direkt).
+
+### Tester
+
+```bash
+php artisan test
+```
+
+---
+
+## API
+
+| Metod | Endpoint | Beskrivning |
+|-------|----------|-------------|
+| GET | `/api/cases` | Lista ärenden (`?status=`, `?priority=`, `?search=`) |
+| POST | `/api/cases` | Skapa ärende |
+| GET | `/api/cases/{id}` | Hämta ärende med tidslinje |
+| PATCH | `/api/cases/{id}/status` | Uppdatera status |
+| PATCH | `/api/cases/{id}/note` | Uppdatera intern anteckning |
+
+---
+
+## Projektstruktur (urval)
+
+```
+app/
+├── Enums/              # Domänenums
+├── Http/
+│   ├── Controllers/Api/
+│   ├── Requests/
+│   └── Resources/
+├── Models/
+└── Services/
+
+resources/js/
+├── api/cases.js        # API-klient
+├── components/         # Vue-komponenter
+├── composables/        # Delad state
+├── views/              # Sidor
+├── App.vue
+└── router.js
+
+tests/Feature/Api/      # API-tester
+```
+
+---
+
+## Portfolio case study
+
+### Kort version (1–2 meningar)
+
+> Ett kompakt Laravel + Vue + Tailwind-projekt där jag byggde ett API-first-flöde för vårdrelaterad ärendehantering, med fokus på tillgänglighet, tydlig statuslogik och responsiv UX.
+
+### Längre version (för portfolio / ansökan)
+
+**Care Intake Dashboard**
+
+*Laravel + Vue 3 + Tailwind — API-first ärendehantering*
+
+**Bakgrund**  
+Jag ville visa att jag snabbt kan sätta mig in i en ny stack och leverera ett genomtänkt, litet men komplett projekt — relevant för digitala lösningar inom vård och psykologi.
+
+**Problem**  
+En mottagning behöver hantera inkommande vårdförfrågningar strukturerat: registrera, prioritera, följa status och dokumentera internt — utan att exponera riktiga personuppgifter i en demo.
+
+**Lösning**  
+Ett API-first dashboard där administratör kan registrera ärenden, filtrera listan, uppdatera status och se en tidslinje över händelser. All data är fiktiv (alias som "Klient A", "Referens 1042").
+
+**Tekniska val**
+
+- **Laravel Enums + Form Requests** — tydliga domänregler och validering
+- **Service-lager** — statusbyte loggas automatiskt i tidslinjen
+- **Vue 3 Composition API** — separerad API-klient, små komponenter med ett ansvar vardera
+- **SQLite** — zero-config lokal setup
+- **Feature-tester** — 9 tester för API och validering
+- **Tillgänglighet** — labels, keyboard navigation, focus states, `aria-live`
+
+**Resultat**  
+Fungerande fullstack-demo som visar att jag kan lära mig Laravel, Vue och Tailwind snabbt — med fokus på kodkvalitet, UX och underhållbar struktur snarare än feature-mängd.
+
+**Vad jag hade gjort vidare**
+
+- Autentisering för admin
+- Paginering vid större datamängd
+- E2E-tester (Playwright)
+- Deploy till t.ex. Laravel Forge / Vercel (frontend) eller single-server
+
+---
+
+## Licens
+
+MIT
