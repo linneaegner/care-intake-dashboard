@@ -9,6 +9,8 @@
       </p>
     </div>
 
+    <CaseFilters class="mb-4" @filter="handleFilter" />
+
     <div
       v-if="loading"
       class="rounded-lg border border-slate-200 bg-white p-6 text-slate-600"
@@ -26,43 +28,21 @@
       {{ error }}
     </div>
 
-    <div
-      v-else
-      class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm"
-    >
-      <p class="text-slate-700">
-        <span class="font-semibold text-slate-900">{{ cases.length }}</span>
-        ärenden hämtade från API:t.
-      </p>
-      <p class="mt-2 text-sm text-slate-500">
-        Listvy och filter byggs i nästa steg (CaseList, CaseFilters).
-      </p>
-
-      <ul v-if="cases.length" class="mt-4 space-y-2">
-        <li
-          v-for="item in cases.slice(0, 5)"
-          :key="item.id"
-          class="flex items-center justify-between rounded-md border border-slate-100 px-3 py-2"
-        >
-          <span class="font-medium text-slate-900">{{ item.alias }}</span>
-          <RouterLink
-            :to="`/cases/${item.id}`"
-            class="text-sm font-medium text-care-700 hover:text-care-800"
-          >
-            Visa
-          </RouterLink>
-        </li>
-      </ul>
-    </div>
+    <CaseList v-else :cases="cases" />
   </section>
 </template>
 
 <script setup>
 import { onMounted } from 'vue';
-import { RouterLink } from 'vue-router';
+import CaseFilters from '../components/CaseFilters.vue';
+import CaseList from '../components/CaseList.vue';
 import { useCases } from '../composables/useCases';
 
 const { cases, loading, error, fetchCases } = useCases();
+
+function handleFilter(filters) {
+  fetchCases(filters);
+}
 
 onMounted(() => {
   fetchCases();
