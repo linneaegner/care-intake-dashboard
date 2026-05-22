@@ -10,7 +10,17 @@ async function request(url, options = {}) {
         ...options,
     });
 
-    const payload = await response.json().catch(() => ({}));
+    let payload;
+
+    try {
+        payload = await response.json();
+    } catch {
+        throw {
+            status: response.status,
+            message: response.ok ? 'Ogiltigt svar från servern.' : 'Något gick fel.',
+            errors: {},
+        };
+    }
 
     if (!response.ok) {
         throw {
