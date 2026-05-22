@@ -75,7 +75,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { onBeforeUnmount, reactive } from 'vue';
 
 const emit = defineEmits(['filter']);
 
@@ -112,9 +112,15 @@ function debouncedEmit() {
 }
 
 function resetFilters() {
+  clearTimeout(debounceTimer);
+  debounceTimer = null;
   localFilters.search = '';
   localFilters.status = '';
   localFilters.priority = '';
   emitFilters();
 }
+
+onBeforeUnmount(() => {
+  clearTimeout(debounceTimer);
+});
 </script>
