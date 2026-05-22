@@ -31,6 +31,32 @@ Ett kompakt fullstack-projekt för fiktiv ärendehantering på en psykologmottag
 
 ---
 
+## Skärmdumpar
+
+**Lista och filter**
+
+![Dashboard med ärendelista, filter och statusbadges](docs/screenshots/care-intake-list.png)
+
+**Ärendedetalj och tidslinje**
+
+![Detaljvy för Referens 1042 med status, intern anteckning och tidslinje](docs/screenshots/care-intake-detail.png)
+
+**Statusuppdatering med bekräftelse**
+
+![Status ändrad till Bokad med grön bekräftelsebanner](docs/screenshots/care-intake-status-updated.png)
+
+**Registrera nytt ärende**
+
+![Formulär för nytt ärende med alias, kanal, typ och prioritet](docs/screenshots/care-intake-form.png)
+
+**Validering**
+
+![Formulär med svenska valideringsfel på obligatoriska fält](docs/screenshots/care-intake-validation.png)
+
+Full case study med fler bilder: [linnea.egner.se/projects/care-intake-dashboard](https://linnea.egner.se/projects/care-intake-dashboard)
+
+---
+
 ## Arkitektur
 
 ```
