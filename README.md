@@ -1,5 +1,7 @@
 # Care Intake Dashboard
 
+API-first care intake dashboard — Laravel, Vue 3 & Tailwind. Portfolio demo for fictional case management with accessibility and clear status workflows.
+
 Fullstack-demo för fiktiv ärendehantering på en psykologmottagning — Laravel API + Vue 3 SPA. Fokus på tydlig domänlogik, API-first-arkitektur, tillgänglighet och underhållbar kodstruktur.
 
 > Demo med fiktiva alias. Inga riktiga personuppgifter används.
